@@ -56,7 +56,7 @@ class WallpaperRepository(private val context: Context) {
 
     private val colorsListener: ((WallpaperColors?, Int) -> Unit)? =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            { colors, which -> if (which and WallpaperManager.FLAG_SYSTEM != 0) applyColors(colors) }
+            { colors, which -> if (colors != null && which and WallpaperManager.FLAG_SYSTEM != 0) applyColors(colors) }
         } else null
 
     private val changedReceiver = object : BroadcastReceiver() {
@@ -71,7 +71,9 @@ class WallpaperRepository(private val context: Context) {
             ContextCompat.RECEIVER_NOT_EXPORTED,
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            colorsListener?.let { wallpaperManager.addOnColorsChangedListener(it, null) }
+            colorsListener?.let {
+                wallpaperManager.addOnColorsChangedListener(it, android.os.Handler(android.os.Looper.getMainLooper()))
+            }
         }
         refreshNow()
     }
