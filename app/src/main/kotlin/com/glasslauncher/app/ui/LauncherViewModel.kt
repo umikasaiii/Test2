@@ -61,6 +61,15 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
 
     enum class EditSheet { WALLPAPER, WIDGETS, ICONS, LAYOUT, THEME, EFFECTS, SETTINGS }
 
+    enum class TopPanel { NONE, NOTIFICATIONS, CONTROL_CENTER }
+
+    private val _topPanel = MutableStateFlow(TopPanel.NONE)
+    val topPanel: StateFlow<TopPanel> = _topPanel.asStateFlow()
+
+    fun openNotificationPanel() { _topPanel.value = TopPanel.NOTIFICATIONS }
+    fun openControlCenter() { _topPanel.value = TopPanel.CONTROL_CENTER }
+    fun closeTopPanel() { _topPanel.value = TopPanel.NONE }
+
     // --- navigation ---
     fun openDrawer() { _topScreen.value = TopScreen.DRAWER }
     fun openHome() { _topScreen.value = TopScreen.HOME }

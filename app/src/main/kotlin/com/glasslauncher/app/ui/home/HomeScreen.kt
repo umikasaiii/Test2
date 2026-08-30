@@ -95,7 +95,6 @@ fun HomeScreen(
                             .homeGestures(
                                 settings = settings.gestures,
                                 onSwipeUp = { viewModel.openDrawer() },
-                                onSwipeDown = { GestureHelper.expandNotificationShade(context) },
                                 onPinch = { viewModel.setEditMode(true) },
                                 onDoubleTap = { GestureHelper.lockScreenNow(context) },
                             ),

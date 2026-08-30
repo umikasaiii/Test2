@@ -34,7 +34,8 @@ fun GestureSection(settings: LauncherSettings, vm: LauncherViewModel) {
 
     SettingsSectionCard("GESTURE") {
         SettingsSwitchRow("Swipe up -> App drawer", g.swipeUpOpensDrawer) { vm.updateSettings { s -> s.copy(gestures = s.gestures.copy(swipeUpOpensDrawer = it)) } }
-        SettingsSwitchRow("Swipe down -> Notifiche", g.swipeDownOpensNotifications) { vm.updateSettings { s -> s.copy(gestures = s.gestures.copy(swipeDownOpensNotifications = it)) } }
+        SettingsSwitchRow("Swipe giù da sinistra -> Notifiche", g.swipeDownOpensNotifications) { vm.updateSettings { s -> s.copy(gestures = s.gestures.copy(swipeDownOpensNotifications = it)) } }
+        SettingsSwitchRow("Swipe giù da destra -> Centro di controllo", g.swipeDownOpensControlCenter) { vm.updateSettings { s -> s.copy(gestures = s.gestures.copy(swipeDownOpensControlCenter = it)) } }
         SettingsSwitchRow("Pinch -> Modifica Home", g.pinchOpensHomeSettings) { vm.updateSettings { s -> s.copy(gestures = s.gestures.copy(pinchOpensHomeSettings = it)) } }
         SettingsSwitchRow("Pressione lunga -> Menu", g.longPressOpensEditMode) { vm.updateSettings { s -> s.copy(gestures = s.gestures.copy(longPressOpensEditMode = it)) } }
         SettingsSwitchRow("Doppio tap -> Blocca schermo", g.doubleTapLocksScreen) { enabled ->

@@ -156,9 +156,44 @@ data class AppDrawerSettings(
 data class GestureSettings(
     val swipeUpOpensDrawer: Boolean = true,
     val swipeDownOpensNotifications: Boolean = true,
+    val swipeDownOpensControlCenter: Boolean = true,
     val doubleTapLocksScreen: Boolean = false,
     val pinchOpensHomeSettings: Boolean = true,
     val longPressOpensEditMode: Boolean = true,
+)
+
+/** One quick-toggle tile in the Control Center. Order in the list is the display order. */
+@Serializable
+enum class ControlCenterTile { WIFI, BLUETOOTH, FLASHLIGHT, AIRPLANE, DND, ROTATION_LOCK }
+
+@Serializable
+data class ControlCenterSettings(
+    val enabled: Boolean = true,
+    val tiles: List<ControlCenterTile> = listOf(
+        ControlCenterTile.WIFI, ControlCenterTile.BLUETOOTH, ControlCenterTile.FLASHLIGHT,
+        ControlCenterTile.AIRPLANE, ControlCenterTile.DND, ControlCenterTile.ROTATION_LOCK,
+    ),
+    val showBrightnessSlider: Boolean = true,
+    val showVolumeSlider: Boolean = true,
+    val widthFraction: Float = 0.9f,
+    val cornerRadiusDp: Float = 32f,
+    val tileCornerRadiusDp: Float = 20f,
+    val blurRadiusDp: Float = 32f,
+    val transparency: Float = 0.24f,
+    val glow: Float = 0.3f,
+)
+
+@Serializable
+data class NotificationPanelSettings(
+    val enabled: Boolean = true,
+    val showAppIcon: Boolean = true,
+    val groupByApp: Boolean = false,
+    val widthFraction: Float = 0.9f,
+    val maxHeightFraction: Float = 0.7f,
+    val cornerRadiusDp: Float = 32f,
+    val itemCornerRadiusDp: Float = 20f,
+    val blurRadiusDp: Float = 32f,
+    val transparency: Float = 0.24f,
 )
 
 @Serializable
@@ -174,6 +209,8 @@ data class LauncherSettings(
     val search: SearchBarSettings = SearchBarSettings(),
     val drawer: AppDrawerSettings = AppDrawerSettings(),
     val gestures: GestureSettings = GestureSettings(),
+    val controlCenter: ControlCenterSettings = ControlCenterSettings(),
+    val notificationPanel: NotificationPanelSettings = NotificationPanelSettings(),
 ) {
     companion object {
         /** The "Glass Reference" preset: reproduces the reference image proportions, without setting its wallpaper. */

@@ -32,12 +32,14 @@ import com.glasslauncher.app.ui.settings.sections.AdvancedSection
 import com.glasslauncher.app.ui.settings.sections.AppDrawerSection
 import com.glasslauncher.app.ui.settings.sections.AppearanceSection
 import com.glasslauncher.app.ui.settings.sections.BackupSection
+import com.glasslauncher.app.ui.settings.sections.ControlCenterSection
 import com.glasslauncher.app.ui.settings.sections.DockSection
 import com.glasslauncher.app.ui.settings.sections.FoldersSection
 import com.glasslauncher.app.ui.settings.sections.GestureSection
 import com.glasslauncher.app.ui.settings.sections.HomeSection
 import com.glasslauncher.app.ui.settings.sections.IconsSection
 import com.glasslauncher.app.ui.settings.sections.InfoSection
+import com.glasslauncher.app.ui.settings.sections.NotificationsSection
 import com.glasslauncher.app.ui.settings.sections.SearchSection
 import com.glasslauncher.app.ui.settings.sections.WallpaperSection
 import com.glasslauncher.app.ui.settings.sections.WidgetSection
@@ -52,6 +54,8 @@ private val SECTIONS = listOf(
     SectionEntry("widgets", "WIDGET"),
     SectionEntry("search", "RICERCA"),
     SectionEntry("drawer", "APP DRAWER"),
+    SectionEntry("controlcenter", "CENTRO DI CONTROLLO"),
+    SectionEntry("notifications", "NOTIFICHE"),
     SectionEntry("gestures", "GESTURE"),
     SectionEntry("appearance", "ASPETTO"),
     SectionEntry("glass", "ADAPTIVE GLASS"),
@@ -145,6 +149,8 @@ private fun RenderSection(id: String, viewModel: LauncherViewModel) {
         "widgets" -> WidgetSection(settings, viewModel)
         "search" -> SearchSection(settings, viewModel)
         "drawer" -> AppDrawerSection(settings, viewModel)
+        "controlcenter" -> ControlCenterSection(settings, viewModel)
+        "notifications" -> NotificationsSection(settings, viewModel)
         "gestures" -> GestureSection(settings, viewModel)
         "appearance" -> AppearanceSection(settings, viewModel)
         "glass" -> AdaptiveGlassSection(settings, viewModel)

@@ -9,16 +9,18 @@ import com.glasslauncher.app.data.model.GestureSettings
 import kotlin.math.abs
 
 /**
- * Wires the Home background's swipe up (drawer), swipe down (notifications), pinch
- * (edit mode) and double tap (lock screen) gestures, each individually toggleable via
- * [GestureSettings]. Stacked as independent `pointerInput` blocks: Compose's built-in
- * gesture detectors already yield to each other correctly (a tap detector cancels once
- * the touch-slop is exceeded, handing off to the drag/transform detector).
+ * Wires the Home background's swipe up (drawer), pinch (edit mode) and double tap (lock
+ * screen) gestures, each individually toggleable via [GestureSettings]. Swipe *down* lives
+ * separately in [com.glasslauncher.app.ui.panels.TopEdgeGestureStrip], anchored to the actual
+ * top edge (like the real status bar) rather than the whole Home background, and split
+ * left/right between the Notification Panel and Control Center. Stacked as independent
+ * `pointerInput` blocks: Compose's built-in gesture detectors already yield to each other
+ * correctly (a tap detector cancels once the touch-slop is exceeded, handing off to the
+ * drag/transform detector).
  */
 fun Modifier.homeGestures(
     settings: GestureSettings,
     onSwipeUp: () -> Unit,
-    onSwipeDown: () -> Unit,
     onPinch: () -> Unit,
     onDoubleTap: () -> Unit,
 ): Modifier = this
@@ -27,15 +29,12 @@ fun Modifier.homeGestures(
             detectTapGestures(onDoubleTap = { onDoubleTap() })
         }
     }
-    .pointerInput(settings.swipeUpOpensDrawer, settings.swipeDownOpensNotifications) {
-        if (settings.swipeUpOpensDrawer || settings.swipeDownOpensNotifications) {
+    .pointerInput(settings.swipeUpOpensDrawer) {
+        if (settings.swipeUpOpensDrawer) {
             var total = 0f
             detectVerticalDragGestures(
                 onDragStart = { total = 0f },
-                onDragEnd = {
-                    if (total < -80f && settings.swipeUpOpensDrawer) onSwipeUp()
-                    if (total > 80f && settings.swipeDownOpensNotifications) onSwipeDown()
-                },
+                onDragEnd = { if (total < -80f) onSwipeUp() },
                 onVerticalDrag = { change, dragAmount ->
                     change.consume()
                     total += dragAmount

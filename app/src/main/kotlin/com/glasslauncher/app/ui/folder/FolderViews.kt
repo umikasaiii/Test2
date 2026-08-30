@@ -1,6 +1,8 @@
 package com.glasslauncher.app.ui.folder
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -93,8 +95,14 @@ fun OpenFolderOverlay(
 ) {
     AnimatedVisibility(
         visible = folder != null,
-        enter = fadeIn(tween(180)) + scaleIn(tween(220), initialScale = 0.92f),
-        exit = fadeOut(tween(150)) + scaleOut(tween(180), targetScale = 0.92f),
+        enter = fadeIn(tween(150)) + scaleIn(
+            spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium),
+            initialScale = 0.88f,
+        ),
+        exit = fadeOut(tween(150)) + scaleOut(
+            spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessHigh),
+            targetScale = 0.92f,
+        ),
     ) {
         if (folder == null) return@AnimatedVisibility
         Box(
