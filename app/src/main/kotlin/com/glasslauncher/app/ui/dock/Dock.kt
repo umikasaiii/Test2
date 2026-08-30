@@ -7,9 +7,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.glasslauncher.app.data.model.AppInfo
@@ -52,9 +57,13 @@ fun Dock(
                 androidx.compose.foundation.layout.Box(
                     Modifier
                         .fillMaxHeight()
-                        .pointerInput(slot, editMode) {
+                        .pointerInput(slot, editMode, info) {
                             detectTapGestures(
-                                onTap = { if (!editMode) info?.let(onLaunch) },
+                                onTap = {
+                                    if (!editMode) {
+                                        if (info != null) onLaunch(info) else onLongPressSlot(slot)
+                                    }
+                                },
                                 onLongPress = { onLongPressSlot(slot) },
                             )
                         },
@@ -66,6 +75,13 @@ fun Dock(
                             packageName = info.packageName,
                             override = dockItem.iconOverride,
                             tileSizeDpOverride = settings.iconSizeDp,
+                        )
+                    } else {
+                        Icon(
+                            Icons.Filled.Add,
+                            contentDescription = "Aggiungi app",
+                            tint = Color.White.copy(alpha = 0.35f),
+                            modifier = Modifier.size((settings.iconSizeDp * 0.6f).dp),
                         )
                     }
                 }

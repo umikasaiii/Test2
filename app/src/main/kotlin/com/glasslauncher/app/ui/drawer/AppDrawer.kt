@@ -31,10 +31,14 @@ import com.glasslauncher.app.data.model.AppInfo
 import com.glasslauncher.app.glass.GlassSurface
 import com.glasslauncher.app.glass.IconTile
 import com.glasslauncher.app.data.model.AppIconOverride
+import com.glasslauncher.app.ui.ContextMenuAction
+import com.glasslauncher.app.ui.ContextMenuOverlay
 
 /**
  * Full-screen app list over the (blurred) Home wallpaper: search field, alphabet scrollbar,
- * and a configurable grid. Hidden apps (from [hiddenKeys]) are filtered out here.
+ * and a configurable grid. Hidden apps (from [hiddenKeys]) are filtered out here. Long-pressing
+ * an app opens a small action menu (open, add to Home, app info, hide, uninstall) rather than
+ * doing anything destructive immediately.
  */
 @Composable
 fun AppDrawer(
@@ -44,9 +48,13 @@ fun AppDrawer(
     initialQuery: String = "",
     modifier: Modifier = Modifier,
     onLaunch: (AppInfo) -> Unit,
-    onLongPressApp: (AppInfo) -> Unit,
+    onAddToHome: (AppInfo) -> Unit,
+    onOpenInfo: (AppInfo) -> Unit,
+    onToggleHidden: (AppInfo) -> Unit,
+    onUninstall: (AppInfo) -> Unit,
 ) {
     var query by remember { mutableStateOf(initialQuery) }
+    var contextApp by remember { mutableStateOf<AppInfo?>(null) }
     val visibleApps = remember(apps, hiddenKeys, query) {
         apps.filter { it.key !in hiddenKeys }
             .filter { query.isBlank() || it.label.contains(query, ignoreCase = true) }
@@ -95,7 +103,7 @@ fun AppDrawer(
                             modifier = Modifier.pointerInput(info.key) {
                                 detectTapGestures(
                                     onTap = { onLaunch(info) },
-                                    onLongPress = { onLongPressApp(info) },
+                                    onLongPress = { contextApp = info },
                                 )
                             },
                         ) {
@@ -124,5 +132,23 @@ fun AppDrawer(
                 }
             }
         }
+
+        val target = contextApp
+        ContextMenuOverlay(
+            title = target?.label,
+            visible = target != null,
+            onDismiss = { contextApp = null },
+            actions = if (target == null) {
+                emptyList()
+            } else {
+                listOf(
+                    ContextMenuAction("Apri") { onLaunch(target) },
+                    ContextMenuAction("Aggiungi alla Home") { onAddToHome(target) },
+                    ContextMenuAction("Info app") { onOpenInfo(target) },
+                    ContextMenuAction("Nascondi") { onToggleHidden(target) },
+                    ContextMenuAction("Disinstalla", destructive = true) { onUninstall(target) },
+                )
+            },
+        )
     }
 }

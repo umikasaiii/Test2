@@ -97,6 +97,27 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
         l.copy(hiddenApps = if (key in l.hiddenApps) l.hiddenApps - key else l.hiddenApps + key)
     }
 
+    /** Places [appInfo] on the current Home page's first free cell (used from the App Drawer's
+     * long-press menu, which has no notion of grid position). Falls back to (0,0) if the page
+     * is completely full. */
+    fun addAppToHomeAutoPlace(appInfo: AppInfo) {
+        val grid = settings.value.homeGrid
+        val pages = layout.value.pages
+        if (pages.isEmpty()) return
+        val pageIndex = currentPage.value.coerceIn(0, pages.lastIndex)
+        val page = pages[pageIndex]
+        val occupied = page.items.map { it.column to it.row }.toSet()
+        for (row in 0 until grid.rows) {
+            for (column in 0 until grid.columns) {
+                if ((column to row) !in occupied) {
+                    addAppToPage(pageIndex, appInfo, column, row)
+                    return
+                }
+            }
+        }
+        addAppToPage(pageIndex, appInfo, 0, 0)
+    }
+
     // --- home grid mutation ---
     fun addAppToPage(pageIndex: Int, app: AppInfo, column: Int, row: Int) = updateLayout { layout ->
         mutatePage(layout, pageIndex) { page ->

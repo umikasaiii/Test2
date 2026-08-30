@@ -79,7 +79,10 @@ fun LauncherApp(viewModel: LauncherViewModel) {
                                     viewModel.launchApp(info)
                                 }
                             },
-                            onLongPressApp = { info -> viewModel.toggleHidden(info.key) },
+                            onAddToHome = { info -> viewModel.addAppToHomeAutoPlace(info); viewModel.openHome() },
+                            onOpenInfo = { info -> viewModel.openAppInfo(info) },
+                            onToggleHidden = { info -> viewModel.toggleHidden(info.key) },
+                            onUninstall = { info -> context.startActivity(viewModel.uninstallIntent(info)) },
                         )
                         TopScreen.SETTINGS -> SettingsScreen(viewModel, onClose = { viewModel.openHome() })
                     }

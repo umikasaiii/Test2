@@ -68,8 +68,10 @@ fun SearchBar(
             Modifier.fillMaxHeight().fillMaxWidth().padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(Icons.Filled.Search, contentDescription = null, tint = Color.White.copy(alpha = 0.85f))
-            Box(Modifier.width(10.dp))
+            IconButton(onClick = { onOpenDrawerWithQuery("") }) {
+                Icon(Icons.Filled.Search, contentDescription = "Apri tutte le app", tint = Color.White.copy(alpha = 0.85f))
+            }
+            Box(Modifier.width(2.dp))
             BasicTextField(
                 value = query,
                 onValueChange = { query = it },
