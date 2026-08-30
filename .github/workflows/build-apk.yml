@@ -1,0 +1,42 @@
+name: Build APK
+
+on:
+  push:
+    branches:
+      - claude/android-glass-launcher-7c4rtl
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Upload APK as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: glass-launcher-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Publish APK as a GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "apk-${{ github.run_number }}" \
+            app/build/outputs/apk/debug/app-debug.apk \
+            --title "Glass Launcher (debug build #${{ github.run_number }})" \
+            --notes "APK di debug generata automaticamente dal commit ${{ github.sha }}. Installala solo su un dispositivo su cui abiliti \"Installa app sconosciute\" per questa fonte." \
+            --repo ${{ github.repository }}
