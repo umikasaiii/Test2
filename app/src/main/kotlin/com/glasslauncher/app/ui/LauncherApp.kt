@@ -24,7 +24,6 @@ import com.glasslauncher.app.ui.drawer.AppDrawer
 import com.glasslauncher.app.ui.home.HomeScreen
 import com.glasslauncher.app.ui.settings.SettingsScreen
 import com.glasslauncher.app.widgethost.LauncherWidgetHost
-import dev.chrisbanes.haze.HazeState
 
 /** The whole launcher UI: one Compose tree, screens swapped by [LauncherViewModel.topScreen]. */
 @Composable
@@ -43,8 +42,6 @@ fun LauncherApp(viewModel: LauncherViewModel) {
     val openFolderId by viewModel.openFolderId.collectAsState()
     val editMode by viewModel.editMode.collectAsState()
 
-    val hazeState = remember { HazeState() }
-
     LaunchedEffect(widgetHost) { widgetHost.start() }
     DisposableEffect(widgetHost) { onDispose { widgetHost.stop() } }
 
@@ -55,9 +52,9 @@ fun LauncherApp(viewModel: LauncherViewModel) {
         viewModel.openHome()
     }
 
-    ProvideGlassEnvironment(style = settings.glass, palette = palette, hazeState = hazeState) {
+    ProvideGlassEnvironment(style = settings.glass, palette = palette) {
         ProvideIconEngine(settings = settings.icons) {
-            GlassRoot(wallpaperBitmap = wallpaperBitmap, hazeState = hazeState) {
+            GlassRoot(wallpaperBitmap = wallpaperBitmap) {
                 AnimatedContent(
                     targetState = topScreen,
                     modifier = Modifier.fillMaxSize(),

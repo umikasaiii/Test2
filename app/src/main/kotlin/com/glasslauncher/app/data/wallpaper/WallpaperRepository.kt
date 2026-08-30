@@ -34,9 +34,10 @@ data class AdaptiveGlassPalette(
  * Single owner of "what does the wallpaper look like right now". Provides:
  *  - [palette]: a few sampled colors, refreshed only on wallpaper-change events
  *    (never per-frame), used to tint the Adaptive Glass material.
- *  - [bitmap]: a copy of the live wallpaper drawn into our own Compose tree so that
- *    [dev.chrisbanes.haze] can capture and blur it as a `hazeSource` (the OS wallpaper
- *    surface itself sits outside our window's render tree and cannot be captured directly).
+ *  - [bitmap]: a copy of the live wallpaper drawn into our own Compose tree so that each
+ *    [com.glasslauncher.app.glass.GlassSurface] can blur its own translated crop of it (the OS
+ *    wallpaper surface itself sits outside our window's render tree and cannot be captured
+ *    directly by any app).
  *
  * Both are cached and only recomputed when the wallpaper actually changes.
  */

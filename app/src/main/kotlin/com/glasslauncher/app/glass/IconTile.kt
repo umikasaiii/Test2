@@ -72,8 +72,8 @@ private fun Drawable.toImageBitmap(sizePx: Int): ImageBitmap {
  *  - MANUAL_IMAGE: a user-picked image, inside the same glass chip.
  *
  * Icon tiles intentionally use a cheap gradient-based "glass" look rather than a real
- * [dev.chrisbanes.haze] blur-behind effect: a Home page can have 30+ of these, and real
- * per-tile background blur would be the single biggest performance cost in the whole app.
+ * blur-behind effect: a Home page can have 30+ of these, and real per-tile background blur
+ * would be the single biggest performance cost in the whole app.
  * Real blur is reserved for the dock, folders, widgets and the search bar.
  */
 @Composable

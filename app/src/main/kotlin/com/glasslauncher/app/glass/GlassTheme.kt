@@ -2,17 +2,19 @@ package com.glasslauncher.app.glass
 
 import android.app.ActivityManager
 import android.content.Context
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.DpSize
 import com.glasslauncher.app.data.model.GlassMode
 import com.glasslauncher.app.data.model.GlassStyleSettings
 import com.glasslauncher.app.data.wallpaper.AdaptiveGlassPalette
-import dev.chrisbanes.haze.HazeState
 
 /** Whether this device can sustain full Adaptive Glass effects; downgraded on low-RAM hardware. */
 object GlassCapability {
@@ -20,6 +22,9 @@ object GlassCapability {
         val am = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
         return am?.isLowRamDevice == true
     }
+
+    /** Real-time [androidx.compose.ui.draw.blur] only reliably renders content on API 31+. */
+    val supportsRealBlur: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 }
 
 val LocalGlassStyle: ProvidableCompositionLocal<GlassStyleSettings> =
@@ -28,16 +33,20 @@ val LocalGlassStyle: ProvidableCompositionLocal<GlassStyleSettings> =
 val LocalAdaptiveGlassPalette: ProvidableCompositionLocal<AdaptiveGlassPalette> =
     compositionLocalOf { AdaptiveGlassPalette() }
 
-val LocalHazeState: ProvidableCompositionLocal<HazeState> =
-    staticCompositionLocalOf { HazeState() }
-
 val LocalGlassLowPower: ProvidableCompositionLocal<Boolean> = staticCompositionLocalOf { false }
+
+/** The live wallpaper bitmap drawn at the root, shared so every [GlassSurface] can draw its own
+ * translated, blurred crop of it (there is no way to capture the real OS wallpaper surface). */
+val LocalWallpaperBitmap: ProvidableCompositionLocal<ImageBitmap?> = staticCompositionLocalOf { null }
+
+/** The full screen size, used so every [GlassSurface] can size its wallpaper crop identically to
+ * the root copy and line pixels up correctly after translation. */
+val LocalScreenSizeDp: ProvidableCompositionLocal<DpSize> = staticCompositionLocalOf { DpSize.Zero }
 
 @Composable
 fun ProvideGlassEnvironment(
     style: GlassStyleSettings,
     palette: AdaptiveGlassPalette,
-    hazeState: HazeState,
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -45,7 +54,6 @@ fun ProvideGlassEnvironment(
     CompositionLocalProvider(
         LocalGlassStyle provides style,
         LocalAdaptiveGlassPalette provides palette,
-        LocalHazeState provides hazeState,
         LocalGlassLowPower provides lowPower,
         content = content,
     )

@@ -65,7 +65,6 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.palette:palette-ktx:1.0.0")
-    implementation("dev.chrisbanes.haze:haze:1.7.3")
     implementation("io.coil-kt:coil-compose:2.7.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
